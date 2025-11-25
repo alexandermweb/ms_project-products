@@ -47,7 +47,8 @@ export class ProductsService {
   async update(id: number, updateProductDto: UpdateProductDto) {
     if(!updateProductDto) throw new BadRequestException('No hay campos para actualizar');
     await this.findOne(id);
-    await this.productRepository.update(id, updateProductDto);
+    const { id: _, ...toUpdate } = updateProductDto;
+    await this.productRepository.update(id, toUpdate);
     const product = await this.productRepository.findOneBy({id});
     return product;
   }
