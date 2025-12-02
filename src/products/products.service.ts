@@ -1,10 +1,11 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from './entities/product.entity';
 import { Not, Repository } from 'typeorm';
 import { PaginationDto } from 'src/common';
+import { RpcException } from '@nestjs/microservices';
 
 @Injectable()
 export class ProductsService {
@@ -40,7 +41,10 @@ export class ProductsService {
 
   async findOne(id: number) {
     const product = await this.productRepository.findOne({ where : { id, available: true } });
-    if (!product) throw new NotFoundException(`Product #${id} not found`);
+    if (!product) throw new RpcException({
+      message:`Product #${id} not found`,
+      status: HttpStatus.BAD_REQUEST
+    });
     return product;
   }
 
