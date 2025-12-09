@@ -4,6 +4,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { PaginationDto } from 'src/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
+import { get } from 'http';
 
 @Controller('products')
 export class ProductsController {
@@ -40,6 +41,11 @@ export class ProductsController {
   }
 
 
+  @MessagePattern({ cmd: 'validate-products' })
+  validateProducts(@Payload() ids:number[]){
+    return this.productsService.validateProducts(ids);
+  }
+
   // @Post()
   // create(@Body() createProductDto: CreateProductDto) {
   //   return this.productsService.create(createProductDto);
@@ -72,3 +78,4 @@ export class ProductsController {
   //   return this.productsService.remove(id);
   // }
 }
+
